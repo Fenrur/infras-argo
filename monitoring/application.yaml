@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+spec:
+  destination:
+    name: ''
+    namespace: monitoring
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    targetRevision: 51.0.3
+    chart: kube-prometheus-stack
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: values
+          value: "https://raw.githubusercontent.com/Fenrur/infras-argo/master/monitoring/values.yaml"
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rook-ceph-operator
+spec:
+  destination:
+    name: ''
+    namespace: rook-ceph
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://charts.rook.io/release'
+    targetRevision: v1.12.4
+    chart: rook-ceph
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: values
+          value: "https://raw.githubusercontent.com/Fenrur/infras-argo/master/rook-ceph/values-operator.yaml"
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rook-ceph-cluster
+spec:
+  destination:
+    name: ''
+    namespace: rook-ceph
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://charts.rook.io/release'
+    targetRevision: v1.12.4
+    chart: rook-ceph
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: values
+          value: "https://raw.githubusercontent.com/Fenrur/infras-argo/master/rook-ceph/values-cluster.yaml"
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
